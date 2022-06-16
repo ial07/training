@@ -1,11 +1,14 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { Modal } from "antd";
 import Link from "next/link";
 import AuthForm from "../components/form/AuthForm";
+import { UserContext } from "../context";
+import { useRouter } from "next/router";
 
 const register = () => {
+  const [state, setState] = useContext(UserContext);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -13,21 +16,20 @@ const register = () => {
   const [ok, setOk] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  const router = useRouter();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     // console.log(process.env.NEXT_PUBLIC_API);
     try {
       // console.log(name, email, password, secret);
       setLoading(true);
-      const { data } = await axios.post(
-        `${process.env.NEXT_PUBLIC_API}/register`,
-        {
-          name: name,
-          email: email,
-          password: password,
-          secret: secret,
-        }
-      );
+      const { data } = await axios.post(`/register`, {
+        name: name,
+        email: email,
+        password: password,
+        secret: secret,
+      });
 
       if (data.error) {
         toast.error(data.error);
@@ -45,6 +47,10 @@ const register = () => {
       setLoading(false);
     }
   };
+
+  if (state && state.token) {
+    router.push("/");
+  }
 
   return (
     <div className="container-fluid">

@@ -9,3 +9,8 @@
 .logo{
     font-weight: bolder;
 }
+
+.active {
+    background-color: gray;
+    font-weight: bold;
+}
